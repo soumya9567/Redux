@@ -2,63 +2,67 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
-const currentlyActiveUser = JSON.parse(localStorage.getItem("currentlyAcitiveUser"))||null;
+const currentlyActiveUser = JSON.parse(localStorage.getItem("currentlyAcitiveUser")) || null;
 
 const authSlice = createSlice({
-    name :"auth",
-    initialState:{
-        user:JSON.parse(localStorage.getItem("user"))||[],
+    name: "auth",
+    initialState: {
+        user: JSON.parse(localStorage.getItem("user")) || [],
         currentUser: currentlyActiveUser,
         isAutheticated: currentlyActiveUser ? true : false,
     },
 
-    reducers:{
-        registerUser:(state,action) =>{
-            const existingUser = state.user.find((user)=>{
+    reducers: {
+        registerUser: (state, action) => {
+            const existingUser = state.user.find((user) => {
                 return user?.email == action.payload?.email;
             })
 
 
-            if(existingUser){
+            if (existingUser) {
                 console.log("user already exist")
-            }else{
-                state.user = [...state.user,action.payload];
-                localStorage.setItem("user",JSON.stringify(state.user))
-                localStorage.setItem("currentlyActiveUser",JSON.stringify(action.payload))
+            } else {
+                state.user = [...state.user, action.payload];
+                localStorage.setItem("user", JSON.stringify(state.user))
+                localStorage.setItem("currentlyActiveUser", JSON.stringify(action.payload))
 
             }
         },
-
-        login:(state,action)=>{
-            console.log(action.payload,"inside the login function")
-            const emailExist = state.action.find((user)=>{
-                return user?.email = action.payload?.email
+        login: (state, action) => {
+            console.log(action.payload, "inside the login function");
+            const emailExist = state.user.find((user) => {
+              return user?.email === action.payload?.email;
             });
-            if(emailExist){
-                state.isAutheticated == true;
-                const autheticatedUser = state.user.find((user)=>{
-                    return user.email === action.payload.email
-                })
-
-                console.log(autheticatedUser,'auth user')
+            if (emailExist) {
+              const isPasswordCorrect = state.user.find((user) => {
+                return user?.password === action.payload?.password;
+              });
+              if (isPasswordCorrect) {
+                state.isAuthenticated = true;
+                const authenticatedUser = state.user.find((user) => {
+                 return user.email === action.payload.email;
+                });
+                console.log(authenticatedUser,'auth user')
                 localStorage.setItem(
-                    "currentlyActiveUser",JSON.stringify(autheticatedUser)
-                )
-
-            }else{
-                console.log("password incorrect")
+                  "currentlyActiveUser",
+                  JSON.stringify(authenticatedUser)
+                );
+              } else {
+                console.log("password is incorrect");
+              }
+            } else {
+              console.log("email is incorrect");
             }
-
-        },
-        logout:(state) =>{
+          },
+        logout: (state) => {
             state.user = []
             state.isAutheticated = false
             localStorage.removeItem("currentlyActiveUser")
         },
 
 
-       
+
     }
 })
-export const {registerUser,login,logout} = authSlice.actions
+export const { registerUser, login, logout } = authSlice.actions;
 export default authSlice.reducer;

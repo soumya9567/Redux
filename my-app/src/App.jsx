@@ -5,7 +5,7 @@ import SignUp from "./pages/signup/SignUp";
 import { useSelector } from "react-redux";
 import Home from "./pages/Home/Home";
 
-function App() {
+ export default function App() {
   const { user, isAutheticated } = useSelector((state) => state.auth);
   const { currentUser } = useSelector((state) => state.auth);
 
@@ -25,9 +25,9 @@ function App() {
         )}
 
         <Route path="/signup" element={<SignUp />} />
+
       </Routes>
     </div>
   );
 }
 
-export default App;
